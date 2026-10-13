@@ -36,14 +36,20 @@ class DashboardController extends Controller
         ));
     }
 
-   public function publicDashboard()
+    public function publicDashboard()
     {
         $profile = ProfileSekolah::first();
         $guru = Guru::take(4)->get();
         $siswa = Siswa::all();
         $beritas = Berita::orderBy('tanggal', 'desc')->take(3)->get();
         $ekstrakurikuler = Ekstrakurikuler::take(4)->get();
-        $galeri = Galeri::orderBy('tanggal', 'desc')->take(6)->get();
+        $galeri = Galeri::orderBy('tanggal', 'desc')->take(3)->get();
+
+        $jumlahGuru = Guru::count();
+        $jumlahSiswa = Siswa::count();
+        $jumlahBerita = Berita::count();
+        $jumlahGaleri = Galeri::count();
+        $jumlahEkstrakurikuler = Ekstrakurikuler::count();
 
         return view('public.dashboard', compact(
             'profile',
@@ -51,7 +57,18 @@ class DashboardController extends Controller
             'siswa',
             'beritas',
             'ekstrakurikuler',
-            'galeri'
+            'galeri',
+            'jumlahGuru',
+            'jumlahSiswa',
+            'jumlahBerita',
+            'jumlahGaleri',
+            'jumlahEkstrakurikuler'
         ));
+    }
+
+    public function publicUjikom()
+    {
+        $profile = ProfileSekolah::first();
+        return view('public.ujikom', compact('profile'));
     }
 }

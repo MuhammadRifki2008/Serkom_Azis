@@ -31,8 +31,10 @@
         .detail-photo {
             width: 100%;
             max-width: 380px;
-            height: 420px;
-            object-fit: cover;
+            height: 500px;
+            object-fit: contain;
+            object-position: center;
+            background: #f5f6f8;
             border-radius: 12px;
             display: block;
             margin: 0 auto;
@@ -41,7 +43,7 @@
         .detail-photo-placeholder {
             width: 100%;
             max-width: 380px;
-            height: 420px;
+            height: 500px;
             background: white;
             border-radius: 12px;
             display: flex;
@@ -55,11 +57,14 @@
             background: white;
             border: 1px solid #e5e7eb;
             border-radius: 12px;
-            padding: 30px;
+            padding: 35px;
+            min-height: 520px;
+            display: flex;
+            flex-direction: column;
         }
 
         .detail-info {
-            padding: 18px 0;
+            padding: 20px 0;
             border-bottom: 1px solid #e5e7eb;
         }
 
@@ -69,7 +74,7 @@
 
         .detail-info small {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 7px;
             color: #777;
         }
 
@@ -96,11 +101,12 @@
 
             .detail-photo,
             .detail-photo-placeholder {
-                height: 380px;
+                height: 450px;
             }
 
             .detail-card {
-                padding: 25px;
+                padding: 28px;
+                min-height: 500px;
             }
         }
 
@@ -111,12 +117,13 @@
 
             .detail-photo,
             .detail-photo-placeholder {
-                height: 350px;
+                height: 420px;
                 max-width: 320px;
             }
 
             .detail-card {
                 padding: 22px;
+                min-height: auto;
             }
 
             .detail-back .btn {

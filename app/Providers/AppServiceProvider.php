@@ -8,13 +8,12 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public function register(): void
-    {
-    }
+    public function register(): void {}
 
     public function boot(): void
     {
-        $profile = ProfileSekolah::first();
-        View::share('profile', $profile);
+         View::composer(['layouts.app', 'layouts.public'], function ($view) {
+            $view->with('profile', ProfileSekolah::first());
+        });
     }
 }

@@ -170,6 +170,18 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('public.ujikom') ? 'active text-primary fw-semibold' : '' }}"
+                       href="{{ route('public.ujikom') }}">
+                        Uji Kompetensi
+                    </a>
+
+                </li>
+
+                <li class="nav-item">
+                    <a href=" {{('login')}}" class="btn btn-primary ">Login</a>
+                </li>
+
             </ul>
         </div>
 

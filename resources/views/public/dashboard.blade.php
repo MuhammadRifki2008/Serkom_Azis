@@ -217,15 +217,15 @@
                         <span>Akreditasi</span>
                     </div>
                     <div class="col-6 col-lg-3 school-stat">
-                        <h2>{{ $guru->count() }}</h2>
+                        <h2>{{ $jumlahGuru }}</h2>
                         <span>Guru & Staf</span>
                     </div>
                     <div class="col-6 col-lg-3 school-stat">
-                        <h2>{{ $siswa->count() }}</h2>
+                        <h2>{{ $jumlahSiswa }}</h2>
                         <span>Siswa</span>
                     </div>
                     <div class="col-6 col-lg-3 school-stat">
-                        <h2>{{ $ekstrakurikuler->count() }}</h2>
+                        <h2>{{ $jumlahEkstrakurikuler }}</h2>
                         <span>Ekstrakurikuler</span>
                     </div>
                 </div>

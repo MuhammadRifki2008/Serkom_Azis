@@ -3,33 +3,49 @@
 namespace App\Http\Controllers;
 
 use App\Models\berita;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 
 class BeritaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    private function bolehKelola(berita $berita): bool
+    {
+        $user = Auth::user();
+
+        return $user !== null && (
+            $user->role === 'Admin' ||
+            (int) $berita->id_user === (int) Auth::id()
+        );
+    }
+
     public function index()
     {
-        $berita = berita::all();
+        $berita = berita::with('user')
+            ->orderBy('tanggal', 'desc')
+            ->get();
+
         return view('admin.berita.index', compact('berita'));
     }
 
     public function addEdit($id = null)
     {
-        try {
-            $berita = $id
-                ? Berita::findOrFail(Crypt::decrypt($id))
-                : null;
-        } catch (\Exception $e) {
-            return redirect()
-                ->route('admin.berita.index')
-                ->with('error', 'Data berita tidak ditemukan.');
+        $berita = null;
+
+        if ($id !== null && $id !== '') {
+            $berita = berita::find($id);
+
+            if (!$berita) {
+                return redirect()
+                    ->route('admin.berita.index')
+                    ->with('error', 'Data berita tidak ditemukan.');
+            }
+
+            abort_unless(
+                $this->bolehKelola($berita),
+                403,
+                'Kamu tidak memiliki izin mengedit berita ini.'
+            );
         }
 
         return view('admin.berita.form', compact('berita'));
@@ -37,18 +53,32 @@ class BeritaController extends Controller
 
     public function save(Request $request, $id = null)
     {
-        if ($id) {
-            try {
-                $id = Crypt::decrypt($id);
-                $berita = Berita::findOrFail($id);
-            } catch (\Exception $e) {
+        $isUpdate = $id !== null && $id !== '';
+
+        if ($isUpdate) {
+            $berita = berita::find($id);
+
+            if (!$berita) {
                 return redirect()
                     ->route('admin.berita.index')
                     ->with('error', 'Data berita tidak ditemukan.');
             }
+
+            abort_unless(
+                $this->bolehKelola($berita),
+                403,
+                'Kamu tidak memiliki izin mengedit berita ini.'
+            );
         } else {
-            $berita = new Berita();
-            $berita->id_user = Auth::id() ?? User::value('id_user');
+            abort_unless(
+                Auth::check() &&
+                    in_array(Auth::user()->role, ['Admin', 'Operator'], true),
+                403
+            );
+
+            $berita = new berita();
+            $berita->id_user = Auth::id();
+            $berita->gambar = '';
         }
 
         $request->validate([
@@ -61,85 +91,88 @@ class BeritaController extends Controller
             'judul.max'        => 'Judul maksimal 50 karakter.',
             'isi.required'     => 'Isi berita wajib diisi.',
             'tanggal.required' => 'Tanggal publikasi wajib diisi.',
-            'gambar.image'     => 'Gambar harus berupa file gambar (JPG, PNG).',
+            'gambar.image'     => 'File harus berupa gambar.',
+            'gambar.mimes'     => 'Gambar harus berformat JPG atau PNG.',
             'gambar.max'       => 'Ukuran gambar maksimal 2MB.',
         ]);
 
-        $berita->judul   = $request->judul;
-        $berita->isi     = $request->isi;
+        $berita->judul = $request->judul;
+        $berita->isi = $request->isi;
         $berita->tanggal = $request->tanggal;
 
         if ($request->hasFile('gambar')) {
-            if ($berita->gambar && Storage::disk('public')->exists($berita->gambar)) {
+            if (
+                $berita->gambar &&
+                Storage::disk('public')->exists($berita->gambar)
+            ) {
                 Storage::disk('public')->delete($berita->gambar);
             }
-            $berita->gambar = $request->file('gambar')->store('berita', 'public');
+
+            $berita->gambar = $request->file('gambar')
+                ->store('berita', 'public');
         }
 
         $berita->save();
 
-        return redirect()->route('admin.berita.index')->with(
-            'success',
-            $id
-                ? 'Data berita berhasil diperbarui.'
-                : 'Data berita berhasil disimpan.'
-        );
+        return redirect()
+            ->route('admin.berita.index')
+            ->with(
+                'success',
+                $isUpdate
+                    ? 'Data berita berhasil diperbarui.'
+                    : 'Data berita berhasil disimpan.'
+            );
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return $this->addEdit();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        return $this->save($request);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(berita $berita)
     {
-        //
+        return redirect()->route('admin.berita.index');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(berita $berita)
     {
-        //
+        abort_unless($this->bolehKelola($berita), 403);
+
+        return $this->addEdit($berita->id_berita);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, berita $berita)
     {
-        //
+        abort_unless($this->bolehKelola($berita), 403);
+
+        return $this->save($request, $berita->id_berita);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
-        try {
-            $berita = Berita::findOrFail(Crypt::decrypt($id));
-        } catch (\Exception $e) {
+        $berita = berita::find($id);
+
+        if (!$berita) {
             return redirect()
                 ->route('admin.berita.index')
                 ->with('error', 'Data berita tidak ditemukan.');
         }
 
-        if ($berita->gambar && Storage::disk('public')->exists($berita->gambar)) {
+        abort_unless(
+            $this->bolehKelola($berita),
+            403,
+            'Kamu tidak memiliki izin menghapus berita ini.'
+        );
+
+        if (
+            $berita->gambar &&
+            Storage::disk('public')->exists($berita->gambar)
+        ) {
             Storage::disk('public')->delete($berita->gambar);
         }
 
@@ -159,7 +192,7 @@ class BeritaController extends Controller
 
     public function publicBeritaDetail($id)
     {
-        $berita = berita::where('id_berita', $id)->firstOrFail();
+        $berita = berita::findOrFail($id);
 
         return view('public.berita-detail', compact('berita'));
     }

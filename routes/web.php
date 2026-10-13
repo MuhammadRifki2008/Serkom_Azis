@@ -22,6 +22,7 @@ Route::get('/guru', [GuruController::class, 'publicGuru'])->name('public.guru');
 Route::get('siswa', [SiswaController::class, 'publicSiswa'])->name('public.siswa');
 Route::get('/berita', [BeritaController::class, 'publicBerita'])->name('public.berita');
 Route::get('/galeri', [GaleriController::class, 'publicGaleri'])->name('public.galeri');
+Route::get('/ujikom', [DashboardController::class, 'publicUjikom'])->name('public.ujikom');
 
 Route::get('/guru/{id}', [GuruController::class, 'publicGuruDetail'])->name('public.guru.detail');
 Route::get('/berita/{id}', [BeritaController::class, 'publicBeritaDetail'])->name('public.berita.detail');

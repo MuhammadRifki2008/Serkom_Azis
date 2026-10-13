@@ -1,8 +1,7 @@
 @extends('layouts.public')
-
 @section('title', 'Guru & Staf')
-
 @push('styles')
+
     <style>
         .guru-banner {
             background: linear-gradient(135deg, #194987, #0d47a1);
@@ -37,6 +36,9 @@
 
         .guru-card {
             height: 100%;
+            min-height: 510px;
+            display: flex;
+            flex-direction: column;
             border: 0;
             border-radius: 15px;
             overflow: hidden;
@@ -51,24 +53,38 @@
 
         .guru-photo {
             width: 100%;
-            height: 280px;
+            height: 420px;
+            flex-shrink: 0;
             object-fit: cover;
+            object-position: center top;
+            display: block;
+        }
+
+        .guru-photo-placeholder {
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .guru-info {
-            padding: 20px 15px;
+            flex: 1;
+            padding: 24px 15px;
             text-align: center;
         }
 
         .guru-info h5 {
             font-weight: 700;
             color: #194987;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            line-height: 1.5;
         }
 
         .guru-info p {
             color: #777;
             margin-bottom: 0;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         .guru-empty {
@@ -135,6 +151,20 @@
             background: #fff;
         }
 
+        @media (max-width: 991px) {
+            .guru-card {
+                min-height: 430px;
+            }
+
+            .guru-photo {
+                height: 340px;
+            }
+
+            .guru-info {
+                padding: 22px 12px;
+            }
+        }
+
         @media (max-width: 767px) {
             .guru-banner {
                 padding: 40px 0;
@@ -144,12 +174,16 @@
                 padding: 35px 0;
             }
 
+            .guru-card {
+                min-height: 350px;
+            }
+
             .guru-photo {
-                height: 220px;
+                height: 260px;
             }
 
             .guru-info {
-                padding: 16px 10px;
+                padding: 18px 10px;
             }
 
             .guru-info h5 {

@@ -47,10 +47,10 @@
                 <div class="logo-header" data-background-color="dark">
                     <a href="{{ route('admin.dashboard') }}"
                         class="logo d-flex align-items-center text-decoration-none">
-                        <img src="{{ asset('storage/profil/' . $profile->logo) }}" alt="{{ $profile->nama_sekolah }}"
-                            style="width:40px;height:40px;object-fit:contain;">
+                        <img src="{{ $profile && $profile->logo ? asset('storage/profil/' . $profile->logo) : asset('assets/img/sekolah/logo.png') }}"
+                            alt="Logo" style="width:40px;height:40px;object-fit:contain;">
                         <span class="text-white fw-bold ms-2">
-                            {{ $profile->nama_sekolah }}
+                            {{ $profile?->nama_sekolah ?? 'SDN MOCH TOHA' }}
                         </span>
                     </a>
 
@@ -87,28 +87,29 @@
                             </a>
                         </li>
 
-                        <li class="nav-item {{ request()->routeIs('admin.profile*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.profile') }}">
-                                <i class="fas fa-school"></i>
-                                <p>Profile Sekolah</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item {{ request()->routeIs('admin.guru*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.guru.index') }}">
-                                <i class="fas fa-chalkboard-teacher"></i>
-                                <p>Data Guru</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item {{ request()->routeIs('admin.siswa*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.siswa.index') }}">
-                                <i class="fas fa-user-graduate"></i>
-                                <p>Data Siswa</p>
-                            </a>
-                        </li>
-
                         @if (auth()->user()->role === 'Admin')
+                            <li class="nav-item {{ request()->routeIs('admin.profile*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.profile') }}">
+                                    <i class="fas fa-school"></i>
+                                    <p>Profile Sekolah</p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item {{ request()->routeIs('admin.guru*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.guru.index') }}">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                    <p>Data Guru</p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item {{ request()->routeIs('admin.siswa*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.siswa.index') }}">
+                                    <i class="fas fa-user-graduate"></i>
+                                    <p>Data Siswa</p>
+                                </a>
+                            </li>
+
+
                             <li class="nav-item {{ request()->routeIs('admin.user*') ? 'active' : '' }}">
                                 <a href="{{ route('admin.user.index') }}">
                                     <i class="fas fa-users-cog"></i>
