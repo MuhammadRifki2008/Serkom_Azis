@@ -121,7 +121,12 @@
             <span>{{ $profile->nama_sekolah ?? 'SDN MOCH TOHA' }}</span>
         </a>
 
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarPublic">
+         <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarPublic"
+                aria-controls="navbarPublic"
+                aria-expanded="false"
+                aria-label="Buka menu">
             <i class="fas fa-bars text-primary"></i>
         </button>
 
@@ -304,7 +309,7 @@
 </footer>
 
 <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
-<script src="{{ asset('assets/js/core/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('asset/js/bootstrap.bundle.min.js') }}"></script>
 
 @stack('scripts')
 
